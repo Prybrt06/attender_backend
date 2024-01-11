@@ -2,6 +2,7 @@ import prisma from "../db";
 
 // Get all subjects of a user
 export const getAllSubject = async (req, res, next) => {
+	// throw new Error("hello");
 	const user = await prisma.user.findUnique({
 		where: {
 			id: req.user.id,
@@ -105,8 +106,6 @@ export const markAttendance = async (req, res, next) => {
 export const updateSubject = async (req, res, next) => {
 	const id = req.params.id;
 
-	console.log(id);
-
 	const subject = await prisma.subject.update({
 		where: {
 			id_belongsToId: {
@@ -134,9 +133,7 @@ export const updateSubject = async (req, res, next) => {
 
 // Delete a subject
 export const deleteSubject = async (req, res) => {
-	console.log("hello");
 	const id = req.params.id;
-	console.log(id);
 
 	const subject = await prisma.subject.delete({
 		where: {

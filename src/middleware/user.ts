@@ -2,19 +2,24 @@ import prisma from "../db";
 import { comparePasswords, createJWT, hashPassword } from "../modules/auth";
 import { body, validationResult } from "express-validator";
 
-export const createNewUser = async (req, res) => {
-	const user = await prisma.user.create({
-		// @ts-ignore
-		data: {
-			username: req.body.username,
-			mail: req.body.mail,
-			password: await hashPassword(req.body.password),
-		},
-	});
+export const createNewUser = async (req, res,next) => {
+	try {
+		const user = await prisma.user.create({
+			// @ts-ignore
+			data: {
+				username: req.body.username,
+				mail: req.body.mail,
+				password: await hashPassword(req.body.password),
+			},
+		});
 
-	const token = createJWT(user);
-	res.status(201);
-	res.json({ token });
+		const token = createJWT(user);
+		res.status(201);
+		res.json({ token });
+	} catch (e) {
+		e.type = "input";
+		next(e);
+	}
 };
 
 export const signin = async (req, res) => {

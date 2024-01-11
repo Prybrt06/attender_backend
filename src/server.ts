@@ -5,7 +5,7 @@ import cors from "cors";
 import subjectRoute from "./routes/subjectRouter";
 
 import { protect } from "./modules/auth";
-import { createNewUser, signin } from "./handlers/user";
+import { createNewUser, signin } from "./middleware/user";
 import { body } from "express-validator";
 import { inputHandler } from "./handlers/inputHandler";
 
@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-	res.status(200);
+	res.status(200).json({ message: "working fine" });
 });
 
 app.use("/subject", protect, subjectRoute);
@@ -38,5 +38,17 @@ app.post(
 	inputHandler,
 	signin
 );
+
+app.use((err, req, res, next) => {
+	if (err.type == "auth") {
+		res.status(400).json({ message: "error in authentication" });
+	} else if (err.type == "input") {
+		res.status(400).json({
+			message: "invalid input or username already used",
+		});
+	} else {
+		res.status(400).json({ message: "There is an error" });
+	}
+});
 
 export default app;

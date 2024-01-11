@@ -8,15 +8,16 @@ import {
 	markAttendance,
 	updateAttendence,
 	updateSubject,
-} from "../handlers/subject";
-import { createUpdate } from "../handlers/update";
+} from "../middleware/subject";
+import { createUpdate } from "../middleware/update";
 import { inputHandler } from "../handlers/inputHandler";
+import subjectExistOrNot from "../handlers/subjectExistanceHandler";
 
 const subjectRoute = Router();
 
 subjectRoute.get("/", getAllSubject);
 
-subjectRoute.get("/:id", getOneSubject);
+subjectRoute.get("/:id", subjectExistOrNot, getOneSubject);
 
 subjectRoute.post(
 	"/create",
@@ -30,6 +31,7 @@ subjectRoute.post(
 	"/markAttendance/:id",
 	body("isAttended").isBoolean(),
 	inputHandler,
+	subjectExistOrNot,
 	markAttendance,
 	createUpdate
 );
@@ -41,9 +43,14 @@ subjectRoute.put(
 	body("totalClasses").isInt(),
 	body("attendedClasses").isInt(),
 	inputHandler,
+	subjectExistOrNot,
 	updateSubject
 );
 
-subjectRoute.delete("/delete/:id", deleteSubject);
+subjectRoute.delete("/delete/:id", subjectExistOrNot, deleteSubject);
+
+subjectRoute.use((err, req, res, next) => {
+	res.status(400).json({ message: "error in subject route" });
+});
 
 export default subjectRoute;
