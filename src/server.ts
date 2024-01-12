@@ -8,6 +8,7 @@ import { protect } from "./modules/auth";
 import { createNewUser, signin } from "./middleware/user";
 import { body } from "express-validator";
 import { inputHandler } from "./handlers/inputHandler";
+import scheduleRoute from "./routes/scheduleRouter";
 
 const app = express();
 
@@ -21,6 +22,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/subject", protect, subjectRoute);
+
+app.use("/schedule", protect, scheduleRoute);
 
 app.post(
 	"/user",
@@ -46,6 +49,8 @@ app.use((err, req, res, next) => {
 		res.status(400).json({
 			message: "invalid input or username already used",
 		});
+	} else if (err.type == "schedule") {
+		res.status(400).json({ message: "error in creating schedule" });
 	} else {
 		res.status(400).json({ message: "There is an error" });
 	}

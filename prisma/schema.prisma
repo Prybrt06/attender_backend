@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,11 +8,12 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
+  id        String     @id @default(uuid())
   mail      String
-  username  String    @unique
+  username  String     @unique
   password  String
-  createdAt DateTime  @default(now())
+  createdAt DateTime   @default(now())
+  schedules Schedule[]
   subjects  Subject[]
   updates   Update[]
 }
@@ -26,9 +24,9 @@ model Subject {
   subjectCode     String   @db.VarChar(255)
   createdAt       DateTime @default(now())
   belongsToId     String
-  belongsTo       User     @relation(fields: [belongsToId], references: [id],onDelete: Cascade)
   totalClasses    Int      @default(0)
   attendedClasses Int      @default(0)
+  belongsTo       User     @relation(fields: [belongsToId], references: [id], onDelete: Cascade)
   updates         Update[]
 
   @@unique([id, belongsToId])
@@ -39,7 +37,26 @@ model Update {
   createdAt       DateTime @default(now())
   isAttended      Boolean
   subjectId       String
-  subject         Subject  @relation(fields: [subjectId], references: [id],onDelete: Cascade)
   belongsToUserId String
-  belongsToUser   User     @relation(fields: [belongsToUserId], references: [id],onDelete: Cascade)
+  belongsToUser   User     @relation(fields: [belongsToUserId], references: [id], onDelete: Cascade)
+  subject         Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+}
+
+model Schedule {
+  id              String @id @default(uuid())
+  day             Day
+  subjectName     String
+  subjectCode     String
+  belongsToUserId String
+  belongsToUser   User   @relation(fields: [belongsToUserId], references: [id], onDelete: Cascade)
+}
+
+enum Day {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
 }
