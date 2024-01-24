@@ -9,6 +9,7 @@ import { createNewUser, signin } from "./middleware/user";
 import { body } from "express-validator";
 import { inputHandler } from "./handlers/inputHandler";
 import scheduleRoute from "./routes/scheduleRouter";
+import updateRoute from "./routes/updateRouter";
 
 const app = express();
 
@@ -24,6 +25,8 @@ app.get("/", (req, res) => {
 app.use("/subject", protect, subjectRoute);
 
 app.use("/schedule", protect, scheduleRoute);
+
+app.use("/update", protect, updateRoute)
 
 app.post(
 	"/user",

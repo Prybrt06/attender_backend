@@ -17,3 +17,13 @@ export const createUpdate = async (req, res, next) => {
 	// res.status(201);
 	// res.json({ update: update });
 };
+
+export const getAllUpdates = async (req,res) => {
+	const updates = await prisma.update.findMany({
+		where: {
+			belongsToUserId: req.user.id,
+		}
+	});
+
+	res.status(200).json({updates: updates});
+}
