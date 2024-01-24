@@ -43,10 +43,14 @@ model Update {
 }
 
 model Schedule {
-  id              String @id @default(uuid())
-  day             Day
-  subjectName     String
-  subjectCode     String
+  id          String @id @default(uuid())
+  subjectName String
+  subjectCode String
+
+  day       Day
+  startTime Int
+  endTime   Int
+
   belongsToUserId String
   belongsToUser   User   @relation(fields: [belongsToUserId], references: [id], onDelete: Cascade)
 }
